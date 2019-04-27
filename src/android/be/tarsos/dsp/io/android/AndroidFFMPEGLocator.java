@@ -71,6 +71,9 @@ public class AndroidFFMPEGLocator {
             case ARMEABI_V7A_NEON:
                 ffmpegFileName = "armeabi-v7a-neon_ffmpeg";
                 break;
+            case ARMEABI_V8A:
+                ffmpegFileName = "armeabi-v8a_ffmpeg";
+                break;
             default:
                 ffmpegFileName = null;
                 String message= "Could not determine your processor architecture correctly, no ffmpeg binary available.";
@@ -129,7 +132,7 @@ public class AndroidFFMPEGLocator {
     }
 
     private enum CPUArchitecture{
-        X86,ARMEABI_V7A,ARMEABI_V7A_NEON;
+        X86,ARMEABI_V7A,ARMEABI_V7A_NEON,ARMEABI_V8A;
     }
 
     private boolean isCPUArchitectureSupported(String alias) {
@@ -146,8 +149,11 @@ public class AndroidFFMPEGLocator {
     }
 
     private CPUArchitecture getCPUArchitecture() {
-        // check if device is x86
-        if (isCPUArchitectureSupported("x86")) {
+        // first check if device support 64 bit
+        if (isCPUArchitectureSupported("armeabi-v8a")) {
+            return CPUArchitecture.ARMEABI_V8A;
+        }
+        else if (isCPUArchitectureSupported("x86")) {
             return CPUArchitecture.X86;
         } else if (isCPUArchitectureSupported("armeabi-v7a")) {
             // check if NEON is supported:
